@@ -32,11 +32,6 @@ const persistAuthConfig = {
   storage: typeof window !== "undefined" ? storage : createNoopStorage(),
 };
 
-const persistNotificationConfig = {
-  key: "notifications",
-  storage: typeof window !== "undefined" ? storage : createNoopStorage(),
-};
-
 // Create persisted reducers
 const persistedAuthReducer = persistReducer(persistAuthConfig, authReducer);
 

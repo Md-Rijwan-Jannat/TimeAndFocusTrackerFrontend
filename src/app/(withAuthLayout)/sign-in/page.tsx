@@ -1,5 +1,10 @@
+import { SignIn } from "@/components/modules/auth/signIn";
 import React from "react";
 
-export default function SignIn() {
-  return <div>SignIn</div>;
+export default function SignInPage() {
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <SignIn />
+    </div>
+  );
 }

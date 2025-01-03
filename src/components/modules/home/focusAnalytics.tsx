@@ -36,7 +36,7 @@ export function FocusAnalytics() {
             <BarChart data={data}>
               <XAxis dataKey="day" />
               <YAxis />
-              <Bar dataKey="focusTime" fill="#000000" />
+              <Bar dataKey="focusTime" fill="#8040BF" />
             </BarChart>
           </ResponsiveContainer>
         </div>
