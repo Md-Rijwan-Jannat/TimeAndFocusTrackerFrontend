@@ -30,6 +30,7 @@ import { setCredentials } from "@/redux/api/features/auth/authSlice";
 import { Clock, Target, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FocusAndTimeTrackerLogo } from "../shared/focusAndTimeTrackerLogo";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email" }),
@@ -42,6 +43,7 @@ export function SignIn() {
   const [signIn, { isLoading }] = useSignInMutation();
   const { toast } = useToast();
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -62,11 +64,15 @@ export function SignIn() {
         });
         const userData = {
           id: res.data.user_id,
+          name: res.data.name,
           email: res.data.email,
           role: res.data.role,
+          avatar_url: res.data.avatar_url,
         };
 
         dispatch(setCredentials({ user: userData, token: res.accessToken }));
+        form.reset();
+        router.push("/");
       }
     } catch (error) {
       toast({
@@ -79,7 +85,7 @@ export function SignIn() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 w-full">
-      <Card className="w-full max-w-md mx-auto bg-white shadow-xl rounded-xl overflow-hidden">
+      <Card className="w-full max-w-md mx-auto shadow-xl rounded-xl overflow-hidden">
         <div className="p-3 md:p-5">
           <div className="flex justify-between items-center mb-4">
             <FocusAndTimeTrackerLogo />
@@ -91,13 +97,13 @@ export function SignIn() {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-4 p-3 md:p-5">
+            <CardContent className="space-y-3 p-3 md:p-5">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-purple-800">Email</FormLabel>
+                    <FormLabel className="text-purple-500">Email</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500" />
@@ -117,7 +123,7 @@ export function SignIn() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-purple-800">Password</FormLabel>
+                    <FormLabel className="text-purple-500">Password</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500" />
@@ -145,7 +151,7 @@ export function SignIn() {
                 )}
               />
             </CardContent>
-            <CardFooter className="flex flex-col space-y-4 bg-purple-50 p-3 md:p-5">
+            <CardFooter className="flex flex-col space-y-4 p-3 md:p-5 mt-4 md:mt-2">
               <Button
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                 type="submit"
@@ -158,11 +164,11 @@ export function SignIn() {
                 )}
                 Sign In
               </Button>
-              <div className="text-center text-xs text-purple-800">
+              <div className="text-center text-xs">
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/sign-up"
-                  className=" text-purple-600 hover:text-purple-500"
+                  className="pl-1 text-purple-500 hover:text-purple-600"
                 >
                   Sign up
                 </Link>

@@ -31,7 +31,7 @@ export function FocusAnalytics() {
           <div className="text-sm font-medium">Average Daily Focus Time</div>
           <div className="text-2xl font-bold">{averageFocusTime} minutes</div>
         </div>
-        <div className="h-[200px] w-full">
+        <div className="h-[200px] w-full -ml-6">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
               <XAxis dataKey="day" />
