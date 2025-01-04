@@ -15,21 +15,10 @@ export function Gamification() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Achievements</CardTitle>
+        <CardTitle>Badges</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <div className="text-sm font-medium">Current Streak</div>
-          <Progress
-            value={(currentStreak / longestStreak) * 100}
-            className="w-full"
-          />
-          <div className="text-sm text-muted-foreground">
-            {currentStreak} days (Longest: {longestStreak} days)
-          </div>
-        </div>
-        <div className="space-y-2">
-          <div className="text-sm font-medium">Badges</div>
           <div className="flex flex-wrap gap-2">
             {badges.map((badge) => (
               <Badge
