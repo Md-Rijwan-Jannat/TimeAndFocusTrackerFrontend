@@ -1,8 +1,29 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getUser } from "@/redux/features/auth/authSlice";
+import { useGetAllUserRewardsQuery } from "@/redux/features/rewards/rewardsApi";
+import { useAppSelector } from "@/redux/hook";
 
 export function AccountStats() {
+  const user = useAppSelector(getUser);
+  const { data, isLoading, isError } = useGetAllUserRewardsQuery(user?.id || 0);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading rewards data.</div>;
+  }
+
+  const rewards = data?.data || [];
+
+  console.log(data, "data==>");
+
   return (
     <div className="space-y-4">
+      {/* Account Statistics */}
       <Card>
         <CardHeader>
           <CardTitle>Account Statistics</CardTitle>
@@ -26,18 +47,25 @@ export function AccountStats() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Achievements Section */}
       <Card>
         <CardHeader>
           <CardTitle>Achievements</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Early Bird (5 AM sessions)</li>
-            <li>Night Owl (10 PM sessions)</li>
-            <li>Focus Master (10 hours in a day)</li>
-            <li>Consistency King (30-day streak)</li>
-            <li>Productivity Pro (100 completed sessions)</li>
-          </ul>
+          {rewards.length > 0 ? (
+            <ul className="list-disc pl-5 space-y-1">
+              {rewards.slice(0, 7).map((reward: any) => (
+                <li key={reward.id}>
+                  <span className="font-semibold">{reward.rewardType}:</span>{" "}
+                  {reward.details}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No achievements available.</p>
+          )}
         </CardContent>
       </Card>
     </div>
