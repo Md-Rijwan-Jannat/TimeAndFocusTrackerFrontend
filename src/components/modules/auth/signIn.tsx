@@ -24,14 +24,14 @@ import {
 } from "@/components/ui/card";
 import { Icons } from "@/components/modules/shared/icons";
 import { useSignInMutation } from "@/redux/features/auth/autApi";
-import { useToast } from "@/hooks/use-toast";
 import { useAppDispatch } from "@/redux/hook";
 import { setCredentials } from "@/redux/features/auth/authSlice";
-import { Clock, Target, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Clock, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FocusAndTimeTrackerLogo } from "../shared/focusAndTimeTrackerLogo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Toast } from "@/components/ui/toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/hooks/use-toast";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email" }),
@@ -58,10 +58,14 @@ export function SignIn() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const res = await signIn(values).unwrap();
+      console.log(res, "res");
       if (res.success) {
-        Toast({
+        toast({
           title: "Signed in successfully",
-          // description: "Welcome back to FocusTrack!",
+          description: "Welcome back to FocusTrack!",
+          action: (
+            <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+          ),
         });
         const userData = {
           id: res.data.user_id,
@@ -86,6 +90,20 @@ export function SignIn() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 w-full">
+      <Button
+        variant="outline"
+        onClick={() => {
+          toast({
+            title: "Scheduled: Catch up ",
+            description: "Friday, February 10, 2023 at 5:57 PM",
+            action: (
+              <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
+            ),
+          });
+        }}
+      >
+        Add to calendar
+      </Button>
       <Card className="w-full max-w-md mx-auto shadow-xl rounded-xl overflow-hidden">
         <div className="p-3 md:p-5">
           <div className="flex justify-between items-center mb-4">

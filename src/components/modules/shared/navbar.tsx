@@ -2,7 +2,6 @@
 
 import React from "react";
 import { FocusAndTimeTrackerLogo } from "./focusAndTimeTrackerLogo";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ModeToggle } from "./modeToggle";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";

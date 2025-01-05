@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/card";
 import { useSignUpMutation } from "@/redux/features/auth/autApi";
 import { Icons } from "../shared/icons";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/hooks/use-toast";
 import { useAppDispatch } from "@/redux/hook";
 import { setCredentials } from "@/redux/features/auth/authSlice";
 import {
