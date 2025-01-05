@@ -31,7 +31,7 @@ export function Gamification() {
             ))}
           </div>
         </div>
-        <div className="text-sm text-muted-foreground italic">
+        <div className="text-sm text-muted-foreground italic bg-green-500/5 text-green-500 rounded-md p-2">
           Great job! You're on a 5-day streak!
         </div>
       </CardContent>

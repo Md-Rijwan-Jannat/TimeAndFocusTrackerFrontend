@@ -1,23 +1,29 @@
-import { DailyFocusChart } from "@/components/modules/home/dailyFocusChart";
-import { FocusAnalytics } from "@/components/modules/home/focusAnalytics";
-import { Gamification } from "@/components/modules/home/gamification";
 import { PomodoroTimer } from "@/components/modules/home/pomodoroTimer";
+import { Gamification } from "@/components/modules/home/gamification";
 import { Streaks } from "@/components/modules/home/streacks";
-import { WeeklyFocusChart } from "@/components/modules/home/weeklyFocusChart";
 
 export default function Home() {
   return (
-    <div className="container p-4 mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Focus Dashboard</h1>
-      <div className="grid gap-8 md:grid-cols-2">
-        <div className="space-y-8">
+    <div className="container mx-auto p-6 lg:p-8 space-y-10 rounded-lg shadow-lg">
+      <h1 className="text-4xl font-extrabold mb-6 text-center">
+        Start your day with focus
+      </h1>
+
+      {/* Main Content Layout */}
+      <div className="grid gap-6 lg:gap-8 grid-cols-1">
+        {/* Left Column */}
+        <div className="p-6 rounded-lg shadow-md flex flex-col items-center space-y-4">
           <PomodoroTimer />
-          <Streaks />
-          <Gamification />
         </div>
-        <div className="space-y-8">
-          <DailyFocusChart />
-          <WeeklyFocusChart />
+
+        {/* Right Column */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+          <div className="p-6 rounded-lg shadow-md">
+            <Streaks />
+          </div>
+          <div className="p-6 rounded-lg shadow-md">
+            <Gamification />
+          </div>
         </div>
       </div>
     </div>
