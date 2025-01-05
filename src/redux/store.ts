@@ -11,7 +11,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import { baseApi } from "./api/baseApi";
-import authReducer from "@/redux/api/features/auth/authSlice";
+import authReducer from "@/redux/features/auth/authSlice";
 
 // Fallback storage if localStorage is not available
 const createNoopStorage = () => ({

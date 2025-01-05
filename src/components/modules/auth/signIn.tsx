@@ -23,14 +23,15 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Icons } from "@/components/modules/shared/icons";
-import { useSignInMutation } from "@/redux/api/features/auth/autApi";
+import { useSignInMutation } from "@/redux/features/auth/autApi";
 import { useToast } from "@/hooks/use-toast";
 import { useAppDispatch } from "@/redux/hook";
-import { setCredentials } from "@/redux/api/features/auth/authSlice";
+import { setCredentials } from "@/redux/features/auth/authSlice";
 import { Clock, Target, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FocusAndTimeTrackerLogo } from "../shared/focusAndTimeTrackerLogo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Toast } from "@/components/ui/toast";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email" }),
@@ -58,9 +59,9 @@ export function SignIn() {
     try {
       const res = await signIn(values).unwrap();
       if (res.success) {
-        toast({
+        Toast({
           title: "Signed in successfully",
-          description: "Welcome back to FocusTrack!",
+          // description: "Welcome back to FocusTrack!",
         });
         const userData = {
           id: res.data.user_id,

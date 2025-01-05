@@ -1,4 +1,4 @@
-import { baseApi } from "../../baseApi";
+import { baseApi } from "../../api/baseApi";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,7 +9,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-      invalidatesTags: [],
+      invalidatesTags: ["User"],
     }),
 
     // SignUp mutation
@@ -19,7 +19,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-      invalidatesTags: [],
+      invalidatesTags: ["User"],
     }),
 
     // Get profile
@@ -28,7 +28,7 @@ const authApi = baseApi.injectEndpoints({
         url: "/profile",
         method: "GET",
       }),
-      providesTags: [],
+      providesTags: ["User"],
     }),
   }),
 });

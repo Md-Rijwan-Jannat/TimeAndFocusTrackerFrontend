@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ModeToggle } from "./modeToggle";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { clearCredentials, getUser } from "@/redux/api/features/auth/authSlice";
+import { clearCredentials, getUser } from "@/redux/features/auth/authSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import {
@@ -43,7 +43,7 @@ export default function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-48 mt-2 border shadow-none backdrop-blur-2xl bg-white/5"
+            className="w-48 mt-2 border shadow-none backdrop-blur-[15px] bg-white/5"
           >
             {user?.email ? (
               <>
