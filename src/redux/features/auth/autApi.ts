@@ -9,7 +9,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Users"],
     }),
 
     // SignUp mutation
@@ -19,7 +19,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["Users"],
     }),
 
     // Get profile
@@ -28,7 +28,7 @@ const authApi = baseApi.injectEndpoints({
         url: "/profile",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: ["Users"],
     }),
   }),
 });
