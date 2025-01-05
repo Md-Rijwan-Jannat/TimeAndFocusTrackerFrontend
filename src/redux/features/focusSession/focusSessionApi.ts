@@ -21,6 +21,15 @@ const focusSessionsApi = baseApi.injectEndpoints({
       providesTags: ["FocusSessions"],
     }),
 
+    // Get active focus session for a user
+    getPausedSession: builder.query({
+      query: (userId) => ({
+        url: `/focus-sessions/${userId}/paused`,
+        method: "GET",
+      }),
+      providesTags: ["FocusSessions"],
+    }),
+
     // Get a focus session by ID
     getFocusSessionById: builder.query({
       query: (sessionId) => ({
@@ -92,6 +101,7 @@ const focusSessionsApi = baseApi.injectEndpoints({
 export const {
   useCreateFocusSessionMutation,
   useGetActiveSessionQuery,
+  useGetPausedSessionQuery,
   useGetFocusSessionByIdQuery,
   useUpdateFocusSessionMutation,
   useDeleteFocusSessionMutation,

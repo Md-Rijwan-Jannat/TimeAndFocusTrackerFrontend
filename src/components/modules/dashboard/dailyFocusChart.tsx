@@ -1,51 +1,44 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGetDailyMetricsQuery } from "@/redux/features/analytics/analyticsApi";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-const data = [
-  {
-    name: "Mon",
-    total: 4,
-  },
-  {
-    name: "Tue",
-    total: 3,
-  },
-  {
-    name: "Wed",
-    total: 2,
-  },
-  {
-    name: "Thu",
-    total: 5,
-  },
-  {
-    name: "Fri",
-    total: 4,
-  },
-  {
-    name: "Sat",
-    total: 3,
-  },
-  {
-    name: "Sun",
-    total: 3,
-  },
-];
+interface DayData {
+  name: string;
+  total: number;
+}
+
+interface DailyFocusMetricsData {
+  data: {
+    dayData: DayData[];
+  };
+}
 
 export function DailyFocusChart() {
-  const totalFocusTime = data.reduce((acc, day) => acc + day.total, 0);
-  const averageFocusTime = Math.round(totalFocusTime / data.length);
+  const { data: dailyFocusMetricsData, isLoading } =
+    useGetDailyMetricsQuery(undefined);
+
+  console.log(dailyFocusMetricsData);
+  const data = dailyFocusMetricsData?.data?.dayData;
+  const totalFocusTime = dailyFocusMetricsData?.data?.totalFocusTime;
+  const sessionsCompleted = dailyFocusMetricsData?.data?.sessionsCompleted;
+  const averageFocusTime = Math.round(totalFocusTime / data?.length);
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 justify-between">
-          Daily Focus Sessions
-          <div className="flex items-center gap-2">
-            <div className="text-sm font-medium">Average</div>
-            <div className="text-sm font-semibold">
-              {averageFocusTime} minutes
+        <CardTitle className="flex items-start gap-2 justify-between">
+          <p className="mt-2">Daily Focus Sessions</p>
+          <div className="flex flex-col items-start gap-2">
+            <div className="flex items-center gap-2 bg-purple-500/5 rounded-md p-2 text-purple-500">
+              <div className="text-sm font-medium">Average Focus Time</div>
+              <div className="text-sm font-semibold">
+                {averageFocusTime} minutes
+              </div>
+            </div>
+            <div className="flex items-center gap-2 bg-green-500/5 rounded-md p-2 text-green-600">
+              <div className="text-sm font-medium">Completed sessions</div>
+              <div className="text-sm font-semibold">{sessionsCompleted}</div>
             </div>
           </div>
         </CardTitle>

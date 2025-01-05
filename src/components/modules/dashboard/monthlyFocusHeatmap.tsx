@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGetMonthlyMetricsQuery } from "@/redux/features/analytics/analyticsApi";
 import {
   ResponsiveContainer,
   Tooltip,
@@ -12,26 +13,12 @@ import {
   Rectangle,
 } from "recharts";
 
-const generateData = () => {
-  const data = [];
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  for (let week = 0; week < 5; week++) {
-    for (let day = 0; day < 7; day++) {
-      data.push({
-        day: day,
-        week: week,
-        value: Math.floor(Math.random() * 5),
-        dayName: days[day],
-        weekName: `Week ${week + 1}`,
-      });
-    }
-  }
-  return data;
-};
-
-const data = generateData();
-
 export function MonthlyFocusHeatmap() {
+  const { data: monthlyFocusMetricsData, isLoading } =
+    useGetMonthlyMetricsQuery(undefined);
+  console.log(monthlyFocusMetricsData);
+  const data = monthlyFocusMetricsData?.data?.data;
+
   return (
     <Card>
       <CardHeader>
@@ -68,7 +55,7 @@ export function MonthlyFocusHeatmap() {
                   return (
                     <div className="bg-background p-2 shadow rounded">
                       <p>{`${data.dayName}, ${data.weekName}`}</p>
-                      <p className="font-bold">{`Focus: ${data.value} hours`}</p>
+                      <p className="font-bold">{`Focus: ${data.value} min`}</p>
                     </div>
                   );
                 }

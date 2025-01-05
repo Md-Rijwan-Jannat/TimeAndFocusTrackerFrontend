@@ -84,11 +84,11 @@ export function SignUp() {
           description: "You can now sign in with your new account.",
         });
         const userData = {
-          id: res.data.user_id,
+          id: res.data.id,
           name: res.data.name,
           email: res.data.email,
           role: res.data.role,
-          avatar_url: res.data.avatar_url,
+          avatar_url: res.data.avatarUrl,
         };
 
         dispatch(setCredentials({ user: userData, token: res.accessToken }));

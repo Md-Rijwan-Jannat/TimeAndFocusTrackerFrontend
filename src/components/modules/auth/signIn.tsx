@@ -50,7 +50,9 @@ export function SignIn() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "admin@example.com",
+      // email: "admin@example.com",
+      // password: "password123",
+      email: "student@example.com",
       password: "password123",
     },
   });
@@ -68,11 +70,11 @@ export function SignIn() {
           ),
         });
         const userData = {
-          id: res.data.user_id,
+          id: res.data.id,
           name: res.data.name,
           email: res.data.email,
           role: res.data.role,
-          avatar_url: res.data.avatar_url,
+          avatar_url: res.data.avatarUrl,
         };
 
         dispatch(setCredentials({ user: userData, token: res.accessToken }));
@@ -90,20 +92,6 @@ export function SignIn() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 w-full">
-      <Button
-        variant="outline"
-        onClick={() => {
-          toast({
-            title: "Scheduled: Catch up ",
-            description: "Friday, February 10, 2023 at 5:57 PM",
-            action: (
-              <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
-            ),
-          });
-        }}
-      >
-        Add to calendar
-      </Button>
       <Card className="w-full max-w-md mx-auto shadow-xl rounded-xl overflow-hidden">
         <div className="p-3 md:p-5">
           <div className="flex justify-between items-center mb-4">
