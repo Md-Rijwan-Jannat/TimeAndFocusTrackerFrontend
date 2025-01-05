@@ -14,11 +14,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/hooks/use-toast";
+import {
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
+} from "@/redux/features/user/userApi";
+import { useState } from "react";
+import { useAppSelector } from "@/redux/hook";
+import { getUser } from "@/redux/features/auth/authSlice";
 
+// Schema for profile form validation
 const profileFormSchema = z.object({
-  username: z
+  name: z
     .string()
     .min(2, {
       message: "Username must be at least 2 characters.",
@@ -28,42 +35,82 @@ const profileFormSchema = z.object({
     }),
   email: z
     .string({
-      required_error: "Please select an email to display.",
+      required_error: "Please provide a valid email address.",
     })
     .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
-    .optional(),
+  avatarUrl: z.string().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I'm a student focused on improving my productivity and time management skills.",
-  urls: [{ value: "https://example.com" }, { value: "https://example2.com" }],
-};
+const defaultValues: Partial<ProfileFormValues> = {};
 
 export function ProfileForm() {
+  const [updateUserFn, { isLoading }] = useUpdateUserMutation();
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const user = useAppSelector(getUser);
+  const { data } = useGetUserByIdQuery(user?.id || 0);
+  const currentUser = data?.data;
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: {
+      name: currentUser?.name ?? "",
+      email: currentUser?.email ?? "",
+      avatarUrl: currentUser?.avatarUrl ?? undefined,
+    },
     mode: "onChange",
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  // Handle image file change
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      uploadToCloudinary(file);
+    }
+  };
+
+  // Upload image to Cloudinary
+  const uploadToCloudinary = async (file: File) => {
+    const cloudinaryPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/upload`;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", cloudinaryPreset as string);
+
+    try {
+      const response = await fetch(cloudinaryUrl, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.secure_url) {
+        form.setValue("avatarUrl", data.secure_url);
+      }
+    } catch (error: any) {
+      toast({ title: "Error uploading image", description: error.message });
+    }
+  };
+
+  // Form submission handler
+  async function onSubmit(data: ProfileFormValues) {
+    try {
+      const res = await updateUserFn({
+        userId: currentUser?.id ?? "",
+        userDetails: data,
+      }).unwrap();
+      toast({
+        title: "Profile updated successfully!",
+      });
+    } catch (error: any) {
+      toast({ title: "Update failed", description: error.message });
+    }
   }
 
   return (
@@ -71,12 +118,12 @@ export function ProfileForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Name" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a
@@ -93,7 +140,7 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="m@example.com" {...field} />
+                <Input placeholder="Email" {...field} />
               </FormControl>
               <FormDescription>
                 You can manage verified email addresses in your email settings.
@@ -104,26 +151,50 @@ export function ProfileForm() {
         />
         <FormField
           control={form.control}
-          name="bio"
-          render={({ field }) => (
+          name="avatarUrl"
+          render={() => (
             <FormItem>
-              <FormLabel>Bio</FormLabel>
+              <FormLabel>Avatar</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="mt-2"
+                  />
+                  {currentUser?.avatarUrl ? (
+                    <>
+                      <div className="mt-4">
+                        <img
+                          src={currentUser?.avatarUrl}
+                          alt="Avatar Preview"
+                          className="w-24 h-24 rounded-full"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {avatarPreview && (
+                        <div className="mt-4">
+                          <img
+                            src={avatarPreview}
+                            alt="Avatar Preview"
+                            className="w-24 h-24 rounded-full"
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Update profile</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Updating..." : "Update Profile"}
+        </Button>
       </form>
     </Form>
   );

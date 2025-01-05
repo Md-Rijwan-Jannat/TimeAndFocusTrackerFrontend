@@ -17,11 +17,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, Settings, LogOut, LogIn } from "lucide-react";
+import { useGetUserByIdQuery } from "@/redux/features/user/userApi";
 
 export default function Navbar() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const user = useAppSelector(getUser);
+  const { data } = useGetUserByIdQuery(user?.id || 0);
+  console.log(data, "data");
 
   const handleSignOut = () => {
     dispatch(clearCredentials());
@@ -36,15 +39,19 @@ export default function Navbar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="cursor-pointer text-purple-500">
-              <AvatarImage src={user?.avatar_url || "/default-avatar.png"} />
-              <AvatarFallback>{user?.name?.slice(0, 1) || "NA"}</AvatarFallback>
+              <AvatarImage
+                src={data?.data?.avatarUrl || "/default-avatar.png"}
+              />
+              <AvatarFallback>
+                {data?.data?.name?.slice(0, 1) || "NA"}
+              </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
             className="w-48 mt-2 border shadow-none backdrop-blur-[15px] bg-white/5"
           >
-            {user?.email ? (
+            {data?.data?.email ? (
               <>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
